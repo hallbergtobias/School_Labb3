@@ -11,10 +11,11 @@ import java.awt.Dimension;
 public interface GameModel {
 	
 	/** A Matrix containing the state of the gameboard. */
-	private final GameTile[][] gameboardState;
+	//private final GameTile[][] gameboardState;
+	
 
 	/** The size of the state matrix. */
-	private final Dimension gameboardSize = Constants.getGameSize();
+	//private final Dimension gameboardSize = Constants.getGameSize();
 
 	/**
 	 * Create a new game model. As GameModel is an abstract class, this is only
@@ -23,7 +24,7 @@ public interface GameModel {
 	protected GameModel() {
 		this.gameboardState =
 				new GameTile[this.gameboardSize.width][this.gameboardSize.height];
-	}
+	} 
 
 	/**
 	 * Set the tile on a specified position in the gameboard.
