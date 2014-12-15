@@ -1,5 +1,11 @@
 package orig2011.v2;
 
-public class GameUtils implements GameModel{
+import java.awt.Dimension;
 
+public class GameUtils implements GameModel{
+	
+	public Dimension getGameboardSize() {
+		return Constants.getGameSize();
+	}
+	
 }
