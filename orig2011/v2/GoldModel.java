@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Sample game for illustration. Intentionally stupid; more interesting
  * games to be provided by students.
@@ -16,7 +17,7 @@ import java.util.List;
  * of remaining coins. The game is won when all coins are collected and lost when
  * collector leaves game board.
  */
-public class GoldModel extends GameUtils {
+public class GoldModel extends GameUtils implements GameModel{
 	public enum Directions {
 		EAST(1, 0),
 		WEST(-1, 0),
@@ -83,23 +84,30 @@ public class GoldModel extends GameUtils {
 
 	/** The number of coins found. */
 	private int score;
+	
+	
+	private final GameTile[][] board;
+
+	
 
 	/**
 	 * Create a new model for the gold game.
 	 */
 	public GoldModel() {
 		Dimension size = getGameboardSize();
+		
+		this.board = new GameTile[size.width][size.height];
 
 		// Blank out the whole gameboard
 		for (int i = 0; i < size.width; i++) {
 			for (int j = 0; j < size.height; j++) {
-				setGameboardState(i, j, BLANK_TILE);
+				this.board[i][j] = BLANK_TILE;
 			}
 		}
 
 		// Insert the collector in the middle of the gameboard.
 		this.collectorPos = new Position(size.width / 2, size.height / 2);
-		setGameboardState(this.collectorPos, COLLECTOR_TILE);
+		this.board[collectorPos.getX()][collectorPos.getY()] = COLLECTOR_TILE;
 
 		// Insert coins into the gameboard.
 		for (int i = 0; i < COIN_START_AMOUNT; i++) {
@@ -120,7 +128,7 @@ public class GoldModel extends GameUtils {
 		} while (!isPositionEmpty(newCoinPos));
 
 		// ... add a new coin to the empty tile.
-		setGameboardState(newCoinPos, COIN_TILE);
+		board[newCoinPos.getX()][newCoinPos.getY()] = COIN_TILE;
 		this.coins.add(newCoinPos);
 	}
 
@@ -180,7 +188,8 @@ public class GoldModel extends GameUtils {
 		updateDirection(lastKey);
 
 		// Erase the previous position.
-		setGameboardState(this.collectorPos, BLANK_TILE);
+		board[collectorPos.getX()][collectorPos.getY()] = BLANK_TILE;
+		
 		// Change collector position.
 		this.collectorPos = getNextCollectorPos();
 
@@ -188,7 +197,7 @@ public class GoldModel extends GameUtils {
 			throw new GameOverException(this.score);
 		}
 		// Draw collector at new position.
-		setGameboardState(this.collectorPos, COLLECTOR_TILE);
+		board[collectorPos.getX()][collectorPos.getY()] = COLLECTOR_TILE;
 
 		// Remove the coin at the new collector position (if any)
 		if (this.coins.remove(this.collectorPos)) {
@@ -203,7 +212,7 @@ public class GoldModel extends GameUtils {
 		// Remove one of the coins
 		Position oldCoinPos = this.coins.get(0);
 		this.coins.remove(0);
-		setGameboardState(oldCoinPos, BLANK_TILE);
+		board[oldCoinPos.getX()][oldCoinPos.getY()] = BLANK_TILE;
 
 		// Add a new coin (simulating moving one coin)
 		addCoin();
@@ -219,5 +228,48 @@ public class GoldModel extends GameUtils {
 		return pos.getX() < 0 || pos.getX() >= getGameboardSize().width
 				|| pos.getY() < 0 || pos.getY() >= getGameboardSize().height;
 	}
+	
+	
+
+	/**
+	 * Returns the GameTile in logical position (x,y) of the gameboard.
+	 * 
+	 * @param pos
+	 *            The position in the gameboard matrix.
+	 */
+	public GameTile getGameboardState(final Position pos) {
+		return getGameboardState(pos.getX(), pos.getY());
+	}
+
+	/**
+	 * Returns the GameTile in logical position (x,y) of the gameboard.
+	 * 
+	 * @param x
+	 *            Coordinate in the gameboard matrix.
+	 * @param y
+	 *            Coordinate in the gameboard matrix.
+	 */
+	public GameTile getGameboardState(final int x, final int y) {
+		return this.board[x][y];
+	}
+
+	
+	/*
+	@Override
+	public orig2011.v2.GameTile getGameboardState(orig2011.v2.Position pos) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public orig2011.v2.GameTile getGameboardState(int x, int y) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	*/
+	
+	
+
 
 }
